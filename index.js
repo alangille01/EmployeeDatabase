@@ -1,4 +1,3 @@
-// index.js
 const inquirer = require('inquirer');
 const {
     viewAllDepartments,

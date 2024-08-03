@@ -1,4 +1,3 @@
-// db/queries.js
 const client = require('./connection');
 
 const viewAllDepartments = async () => {
