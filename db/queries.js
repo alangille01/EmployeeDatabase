@@ -39,6 +39,18 @@ const updateEmployeeManager = async (employeeId, managerId) => {
     await client.query('UPDATE employee SET manager_id = $1 WHERE id = $2', [managerId, employeeId]);
 };
 
+const viewEmployeesByDepartment = async (departmentId) => {
+    const res = await client.query(`
+        SELECT DISTINCT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+        FROM employee 
+        JOIN role ON employee.role_id = role.id 
+        JOIN department ON role.department_id = department.id 
+        LEFT JOIN employee AS manager ON employee.manager_id = manager.id 
+        WHERE department.id = $1
+    `, [departmentId]);
+    return res.rows;
+};
+
 
 module.exports = {
     viewAllDepartments,
@@ -48,5 +60,6 @@ module.exports = {
     addRole,
     addEmployee,
     updateEmployeeRole,
-    updateEmployeeManager
+    updateEmployeeManager,
+    viewEmployeesByDepartment 
 };

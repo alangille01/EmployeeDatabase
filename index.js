@@ -7,7 +7,8 @@ const {
     addRole,
     addEmployee,
     updateEmployeeRole,
-    updateEmployeeManager
+    updateEmployeeManager,
+    viewEmployeesByDepartment
 } = require('./db/queries');
 
 const prompt = inquirer.createPromptModule();
@@ -21,11 +22,12 @@ const mainMenu = async () => {
             'View all departments',
             'View all roles',
             'View all employees',
+            'View employees by department',
             'Add a department',
             'Add a role',
             'Add an employee',
             'Update an employee role',
-            'Update an employee manager', 
+            'Update an employee manager',
             'Exit'
         ]
     });
@@ -43,42 +45,53 @@ const mainMenu = async () => {
             const employees = await viewAllEmployees();
             console.table(employees);
             break;
+        case 'View employees by department':
+            const departmentsData = await viewAllDepartments();
+            const { selectedDepartmentId } = await prompt({
+                name: 'selectedDepartmentId',
+                type: 'list',
+                message: 'Select the department to view employees:',
+                choices: departmentsData.map(department => ({ name: department.name, value: department.id }))
+            });
+            const employeesByDepartment = await viewEmployeesByDepartment(selectedDepartmentId);
+            console.table(employeesByDepartment);
+            break;
         case 'Add a department':
-            const { name } = await prompt({
-                name: 'name',
+            const { newDepartmentName } = await prompt({
+                name: 'newDepartmentName',
                 type: 'input',
                 message: 'Enter the name of the department:'
             });
-            await addDepartment(name);
-            console.log(`Added ${name} to the database.`);
+            await addDepartment(newDepartmentName);
+            console.log(`Added ${newDepartmentName} to the database.`);
             break;
         case 'Add a role':
-            const departmentsData = await viewAllDepartments();
-            const { title, salary, departmentId } = await prompt([
+            const departmentsDataForRole = await viewAllDepartments();
+            const { roleTitle, roleSalary, roleDepartmentId } = await prompt([
                 {
-                    name: 'title',
+                    name: 'roleTitle',
                     type: 'input',
                     message: 'Enter the name of the role:'
                 },
                 {
-                    name: 'salary',
+                    name: 'roleSalary',
                     type: 'input',
                     message: 'Enter the salary of the role:'
                 },
                 {
-                    name: 'departmentId',
+                    name: 'roleDepartmentId',
                     type: 'list',
                     message: 'Select the department for this role:',
-                    choices: departmentsData.map(department => ({ name: department.name, value: department.id }))
+                    choices: departmentsDataForRole.map(department => ({ name: department.name, value: department.id }))
                 }
             ]);
-            await addRole(title, salary, departmentId);
-            console.log(`Added ${title} to the database.`);
+            await addRole(roleTitle, roleSalary, roleDepartmentId);
+            console.log(`Added ${roleTitle} to the database.`);
             break;
         case 'Add an employee':
             const rolesData = await viewAllRoles();
             const employeesData = await viewAllEmployees();
-            const { firstName, lastName, roleId, managerId } = await prompt([
+            const { firstName, lastName, employeeRoleId, employeeManagerId } = await prompt([
                 {
                     name: 'firstName',
                     type: 'input',
@@ -90,19 +103,19 @@ const mainMenu = async () => {
                     message: 'Enter the last name of the employee:'
                 },
                 {
-                    name: 'roleId',
+                    name: 'employeeRoleId',
                     type: 'list',
                     message: 'Select the role for this employee:',
                     choices: rolesData.map(role => ({ name: role.title, value: role.id }))
                 },
                 {
-                    name: 'managerId',
+                    name: 'employeeManagerId',
                     type: 'list',
                     message: 'Select the manager for this employee:',
                     choices: [{ name: 'None', value: null }, ...employeesData.map(employee => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id }))]
                 }
             ]);
-            await addEmployee(firstName, lastName, roleId, managerId);
+            await addEmployee(firstName, lastName, employeeRoleId, employeeManagerId);
             console.log(`Added ${firstName} ${lastName} to the database.`);
             break;
         case 'Update an employee role':
