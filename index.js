@@ -28,6 +28,32 @@ const mainMenu = async () => {
             'Exit'
         ]
     });
+
+    switch (action) {
+        case 'View all departments':
+            const departments = await viewAllDepartments();
+            console.table(departments);
+            break;
+        case 'View all roles':
+            const roles = await viewAllRoles();
+            console.table(roles);
+            break;
+        case 'View all employees':
+            const employees = await viewAllEmployees();
+            console.table(employees);
+            break;
+        case 'Add a department':
+            break;
+        case 'Add a role':
+            break;
+        case 'Add an employee':
+            break;
+        case 'Update an employee role':
+            break;
+        case 'Exit':
+            process.exit();
+    }
+    mainMenu();
 };
 
 mainMenu();
