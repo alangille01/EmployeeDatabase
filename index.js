@@ -43,6 +43,13 @@ const mainMenu = async () => {
             console.table(employees);
             break;
         case 'Add a department':
+            const { name } = await prompt({
+                name: 'name',
+                type: 'input',
+                message: 'Enter the name of the department:'
+            });
+            await addDepartment(name);
+            console.log(`Added ${name} to the database.`);
             break;
         case 'Add a role':
             break;
