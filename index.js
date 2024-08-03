@@ -105,6 +105,24 @@ const mainMenu = async () => {
             console.log(`Added ${firstName} ${lastName} to the database.`);
             break;
         case 'Update an employee role':
+            const employeesForUpdate = await viewAllEmployees();
+            const rolesForUpdate = await viewAllRoles();
+            const { employeeId, newRoleId } = await prompt([
+                {
+                    name: 'employeeId',
+                    type: 'list',
+                    message: 'Select the employee to update:',
+                    choices: employeesForUpdate.map(employee => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id }))
+                },
+                {
+                    name: 'newRoleId',
+                    type: 'list',
+                    message: 'Select the new role for this employee:',
+                    choices: rolesForUpdate.map(role => ({ name: role.title, value: role.id }))
+                }
+            ]);
+            await updateEmployeeRole(employeeId, newRoleId);
+            console.log(`Updated employee's role.`);
             break;
         case 'Exit':
             process.exit();
