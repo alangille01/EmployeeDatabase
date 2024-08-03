@@ -35,6 +35,11 @@ const updateEmployeeRole = async (employeeId, roleId) => {
     await client.query('UPDATE employee SET role_id = $1 WHERE id = $2', [roleId, employeeId]);
 };
 
+const updateEmployeeManager = async (employeeId, managerId) => {
+    await client.query('UPDATE employee SET manager_id = $1 WHERE id = $2', [managerId, employeeId]);
+};
+
+
 module.exports = {
     viewAllDepartments,
     viewAllRoles,
@@ -42,5 +47,6 @@ module.exports = {
     addDepartment,
     addRole,
     addEmployee,
-    updateEmployeeRole
+    updateEmployeeRole,
+    updateEmployeeManager
 };

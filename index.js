@@ -6,7 +6,8 @@ const {
     addDepartment,
     addRole,
     addEmployee,
-    updateEmployeeRole
+    updateEmployeeRole,
+    updateEmployeeManager
 } = require('./db/queries');
 
 const prompt = inquirer.createPromptModule();
@@ -24,6 +25,7 @@ const mainMenu = async () => {
             'Add a role',
             'Add an employee',
             'Update an employee role',
+            'Update an employee manager', 
             'Exit'
         ]
     });
@@ -122,6 +124,25 @@ const mainMenu = async () => {
             ]);
             await updateEmployeeRole(employeeId, newRoleId);
             console.log(`Updated employee's role.`);
+            break;
+        case 'Update an employee manager':
+            const employeesToUpdateManager = await viewAllEmployees();
+            const { employeeIdForManager, newManagerId } = await prompt([
+                {
+                    name: 'employeeIdForManager',
+                    type: 'list',
+                    message: 'Select the employee to update:',
+                    choices: employeesToUpdateManager.map(employee => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id }))
+                },
+                {
+                    name: 'newManagerId',
+                    type: 'list',
+                    message: 'Select the new manager for this employee:',
+                    choices: [{ name: 'None', value: null }, ...employeesToUpdateManager.map(employee => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id }))]
+                }
+            ]);
+            await updateEmployeeManager(employeeIdForManager, newManagerId);
+            console.log(`Updated employee's manager.`);
             break;
         case 'Exit':
             process.exit();
