@@ -11,6 +11,7 @@ This is a terminal application that connects to a PostgreSQL database and manage
 - [Description](#description)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Demo](#demo)
 - [License](#license)
 - [Questions](#questions)
 
@@ -21,6 +22,10 @@ This is a terminal application that connects to a PostgreSQL database and manage
 ## Usage
 
 Run `node index.js`
+
+## Demo
+
+See Demo Video Here: https://drive.google.com/file/d/1a-mLCpGKRL0QOiaYs61UcDYz_ip74MA4/view
 
 ## License
 
